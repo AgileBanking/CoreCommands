@@ -29,7 +29,7 @@
 				margin-bottom: 0.6em;
 				padding: 0;
 			}
-            
+
 			#status li {
 				line-height: 1.3;
 			}
@@ -100,11 +100,10 @@
                             <li>Services: ${grailsApplication.serviceClasses.size()}</li>
                             <li>Tag Libraries: ${grailsApplication.tagLibClasses.size()}</li>
 			</ul>
-                        <h1>Server</h1>
+                        <h1>Servers</h1>
                         <ul>
-                            <li>Local Host Name: ${InetAddress.localHost.hostName}</li>
-                            <li>IP Address     : ${InetAddress.localHost.hostAddress}</li> 
-                            <li>Host Name      : ${InetAddress.localHost.canonicalHostName}</li>
+                            <li>Host Name  : ${InetAddress.localHost.hostName}</li>
+                            <li>IP Address : ${InetAddress.localHost.hostAddress}</li> 
                         </ul>
 			<h1>Installed Plugins</h1>
                             <ul>
@@ -114,18 +113,17 @@
                             </ul>
 		</div>
 		<div id="page-body" role="main">
-			<h1>Welcome to  Agile Banking</h1>
                         <h2>Component: CORE COMMANDS LAYER</h2>
 			<p>This is the Core Commands layer (see QCRS) of the 'Agile Banking' that creates, updates and (logically) deletes resources. You can access all Core resources with HTTP methods:</p>
 			<p>These components have been implemented as MVC pattern. The following list shows all available controllers.<p>
 
 			<div id="controller-list" role="navigation">
-                            <h2>Available Controllers:</h2>
-                            <ul>
-                                <g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
-                                        <li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName - 'admin.' - 'Controller' - 'server.' - 'services.' - 'entities.' - 'grails.plugin.databasemigration.'}</g:link></li>
-                                </g:each>
-                            </ul>
+				<h2>Available Controllers:</h2>
+				<ul>
+					<g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
+						<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName - "admin." - "services." - "entities." - "Controller" - "asset.pipeline." - 'grails.plugin.'}</g:link></li>
+					</g:each>
+				</ul>
 			</div>
 		</div>
 	</body>

@@ -5,7 +5,8 @@ import groovy.xml.MarkupBuilder
 import grails.plugins.rest.client.RestBuilder
 import grails.web.Action
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+//import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import grails.util.Holders
 
 
 class AdminController {
