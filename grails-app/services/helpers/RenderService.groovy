@@ -8,7 +8,8 @@ class RenderService {
     static transactional = false
     
     def prepareAnswer(params, request) {
-        def baseURL = SysConfigService.getComponent(params.sourceComponent).component.baseURL
+//        def baseURL = SysConfigService.getComponent(params.sourceComponent).component.baseURL
+        def baseURL = "http://agilebanking.net:6789/$params.sourceComponent"
 //        def baseURL = entities.Component.findByName(params.sourceComponent).baseURL
         params.reqID = UUID.randomUUID().toString()
         params.Date = new Date().toString()
