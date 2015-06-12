@@ -2,16 +2,18 @@ package services.commons
 
 import grails.plugins.rest.client.RestBuilder
 import grails.converters.JSON
+
 abstract class BaseController {
     static allowedMethods = [
         index:              "GET",
-        create:             "PUT",
-        update:             "POST", 
+        create:             "POST",
+        update:             "PUT", 
         delete:             "DELETE",
         undelete:           "DELETE"]
     
-    def RenderService
-    def BuildLinksService  
+    def renderService
+    def buildLinksService  
+    def sysConfigService
     
     def index()  {
         render (text:"Choose 'create', 'update' or '[un]delete'", status:400, condentType:"application/json" )
@@ -22,47 +24,66 @@ abstract class BaseController {
     def casheControl() {"private, no-cache, no-store" }
       
     def create() {
-        params.sourceURI = "/$params.controller/save.json"   //internal request to domains
+//println "\n1 create: $params"       
+        params.sourceURI = "/$params.controller/save"   //internal request to domains
+//println "2 create: $params"        
+//println "2 body: $request.JSON"
         params.hide = ["id", "version"]
         postNow()        
     }
     
-    def update() {
-        params.sourceURI = "/$params.controller/update.json"   //internal request to domains
+    def update(String id) {
+//println "\n3 update: $params" 
+//println "update-body=" + request.JSON
+        params.sourceURI = "/$params.controller/update/{id}.json".replace("{id}", "$id")    //internal request to domains
+//        println "params.sourceURI: $params.sourceURI"
+//println "4 update: $params"      
+//println "4 body: $request.JSON"
         params.hide = ["id", "version"]
         postNow()         
     }
     
     def delete(Long id) {  
-//        println "from Delete"
-        params.sourceURI = "/$params.controller/delete.json?id=$id"   //internal request to domains
+//        printlnn "from Delete"
+        params.sourceURI = "/$params.controller/delete?id=$id"   //internal request to domains
         postNow()         
     }
     
     def undelete(Long id) {
-//        println "from Undelete"
-        params.sourceURI = "/$params.controller/undelete.json?id=$id"   //internal request to domains
+//        printlnn "from Undelete"
+        params.sourceURI = "/$params.controller/undelete?id=$id"   //internal request to domains
         postNow()               
     }
     
     private postNow() {
+        params."Cashe-Control" = casheControl()
         params.sourceComponent=sourceComponent()
-        params.host = RenderService.hostApp(request) 
-        params.URL =  RenderService.URL(request)         
-        def answer = RenderService.prepareAnswer(params, request) 
-        if ((params.withlinks ? params.withlinks.toLowerCase() : true ) != "false"  ) {
-            answer.links += BuildLinksService.controllerLinks(params, request)
-            answer.links += extraLinks() 
-        }
-        println "status=$params.status"
+//println "params.sourceComponent=$params.sourceComponent" 
+        params.host = renderService.hostApp() //(request) 
+        params.URL =  renderService.URL(request)         
+        def answer = renderService.prepareAnswer(params, request) 
+//        println "Returned from prepareAnswher with " + answer
+//        println "status=$params.status"
+        // add to the answer the related links to complete the REST constrain HATOES
+//        if ((params.withlinks ? params.withlinks.toLowerCase() : true ) != "false"  ) {
+//            answer.links += buildLinksService.controllerLinks(params, request)
+//            answer.links += extraLinks() 
+//        }
+        
+        response.setHeader("Cache-Control",params."Cashe-Control")
         response.status = params.status
+//        println "respons = ${response}"
         // Keep Audit
+        
         try {
-            def auditor = SysConfigService.getComponent("Auditor")
-            if (auditor.component.isActive) { 
+            def auditor = sysConfigService.getComponent("Auditor")
+//            println "auditor: $auditor, isActive = ${auditor.isActive}" 
+            if (auditor.isActive) { 
                 // store in the auditdb (CouchDB)
                 def restAudit = new RestBuilder()
-                def url = auditor.component.baseURL + "/$params.reqID"
+//                def url = auditor.dbServer + "/$params.reqID"
+                def url = "http://auditdb:5984/auditdb/$params.reqID"
+//                println "auditdb=$url"
                 answer.header.auditRec = "$url"
                 def respAudit = restAudit.put("$url"){
                     contentType "application/json"
@@ -84,8 +105,8 @@ abstract class BaseController {
     }
     
     def relatedLinks() {
-        params.host = RenderService.hostApp(request)
-        params.links = BuildLinksService.controllerLinks(params, request)
+        params.host = renderService.hostApp(request)
+        params.links = buildLinksService.controllerLinks(params, request)
         def result = [:]
         result.controller = params.controller 
         params.links += ["self": ["href": "$params.host/$result.controller/relatedLinks"]]

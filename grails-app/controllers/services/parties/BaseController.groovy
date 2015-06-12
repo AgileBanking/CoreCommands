@@ -4,8 +4,8 @@ import grails.converters.JSON
 abstract class BaseController {
     static allowedMethods = [
         index:              "GET",
-        create:             "PUT",
-        update:             "POST", 
+        create:             "POST",
+        update:             "PUT", 
         delete:             "DELETE",
         undelete:           "DELETE"]
     
@@ -17,8 +17,8 @@ abstract class BaseController {
 //    private casheControl() {"public, max-age=5" } // 72000 for 20 hours
     def casheControl() {"private, no-cache, no-store" }
     
-    def XRenderService
-    def XBuildLinksService    
+    def xRenderService
+    def xBuildLinksService     
     
     def create() {
         params.sourceURI = "/$params.controller/save.json"   //internal request to domains
@@ -44,11 +44,11 @@ abstract class BaseController {
     
     private postNow() {
         params.sourceComponent=sourceComponent()
-        params.host = XRenderService.hostApp(request) 
-        params.URL =  XRenderService.URL(request)         
-        def answer = XRenderService.prepareAnswer(params, request) 
+        params.host = xRenderService.hostApp(request) 
+        params.URL =  xRenderService.URL(request)         
+        def answer = xRenderService.prepareAnswer(params, request) 
         if ((params.withlinks ? params.withlinks.toLowerCase() : true ) != "false"  ) {
-            answer.links += XBuildLinksService.controllerLinks(params, request)
+            answer.links += xBuildLinksService .controllerLinks(params, request)
             answer.links += extraLinks() 
         }
         response.status = params.status
@@ -76,8 +76,8 @@ abstract class BaseController {
     }
     
     def relatedLinks() {
-        params.host = XRenderService.hostApp(request)
-        params.links = XBuildLinksService.controllerLinks(params, request)
+        params.host = xRenderService.hostApp(request)
+        params.links = xBuildLinksService .controllerLinks(params, request)
         def result = [:]
         result.controller = params.controller 
         params.links += ["self": ["href": "$params.host/$result.controller/relatedLinks"]]

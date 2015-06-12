@@ -81,7 +81,7 @@ class AdminController {
                 def url = "http://yuml.me/diagram/nofunky;dir:TD/class/draw2/"  
                 url += "[Composer]<>0..*-0..*>[CoreQueries],[Composer]<>0..*-0..*>[CoreCommands],[CoreCommands]<>0..*-0..*>[CoreQueries],[CoreQueries]<>0..*-0..*>[Accounts], [CoreQueries]<>0..*-0..*>[Commons], [CoreQueries]<>0..*-0..*>[Parties], [CoreQueries]<>0..*-0..*>[Products],[CoreQueries]<>0..*-0..*>[API Repository],"
                 url += "[CoreCommands]<>0..*-0..*>[Accounts], [CoreCommands]<>0..*-0..*>[Commons], [CoreCommands]<>0..*-0..*>[Parties], [CoreCommands]<>0..*-0..*>[Products],[CoreCommands]<>0..*-0..*>[API Repository],[Policies]<-[CoreQueries],[Policies]<-[CoreCommands],[Policies]<-[Composer],"       
-                url += "[Policies]<>0..*-0..*>[IAM-SSO-RBAC],[Policies]<>0..*-0..*>[Scheduler],[Scheduler]<>0..*-0..*>[MailManager], [Scheduler]<>0..*-0..*>[ReportingEngine],[APE (Asynch Processing Engine)]<>0..*-0..*>[Logging],"
+                url += "[Policies]<>0..*-0..*>[CAS],[Policies]<>0..*-0..*>[Scheduler],[Scheduler]<>0..*-0..*>[MailManager], [Scheduler]<>0..*-0..*>[ReportingEngine],[APE (Asynch Processing Engine)]<>0..*-0..*>[Logging],"
                 url += "[Clients]<>0..*-0..*>[Composer],[Clients]<>0..*-0..*>[CoreQueries],[Clients]<>0..*-0..*>[CoreCommands],[Clients]<>0..*-0..*>[BizProcessor],[BizProcessor]<>0..*-0..*>[Composer],[BizProcessor]<>0..*-0..*>[CoreQueries],[BizProcessor]<>0..*-0..*>[CoreCommands],"
                 url += "[Composer]<>0..*-0..*[APE (Asynch Processing Engine)],[APE (Asynch Processing Engine)]<>0..0..*[Business Intelligence]"
                 redirect (url:"$url")
